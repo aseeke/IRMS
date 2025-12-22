@@ -18,9 +18,6 @@ SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- ----------------------------
--- Table structure for biz_device
--- ----------------------------
--- ----------------------------
 -- Table structure for biz_office
 -- ----------------------------
 DROP TABLE IF EXISTS `biz_office`;
@@ -34,13 +31,6 @@ CREATE TABLE `biz_office` (
   `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '办公室信息表' ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of biz_office
--- ----------------------------
-INSERT INTO `biz_office` VALUES (1, '总经理办公室', '10楼1001', 'CEO Office', '0', NOW(), NOW());
-INSERT INTO `biz_office` VALUES (2, '财务部大办公室', '9楼901', 'Finance Dept', '0', NOW(), NOW());
-INSERT INTO `biz_office` VALUES (3, '研发部会议室', '8楼808', 'R&D Meeting Room', '0', NOW(), NOW());
 
 -- ----------------------------
 -- Table structure for biz_device
@@ -60,23 +50,7 @@ CREATE TABLE `biz_device`  (
   `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 11 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '设备信息表' ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of biz_device
--- ----------------------------
-INSERT INTO `biz_device` VALUES (1, 'Core Switch A', 'SW-001', 'Cisco 9300', 201, NULL, 2, '1', '2023-01-01', 'Core Network', '2025-12-05 23:49:21', '2025-12-05 23:49:21');
-INSERT INTO `biz_device` VALUES (2, 'HR Server', 'SRV-002', 'Dell R740', 202, NULL, 3, '1', '2023-02-15', 'HR System DB', '2025-12-05 23:49:21', '2025-12-05 23:49:21');
-INSERT INTO `biz_device` VALUES (3, 'Official Web Srv', 'SRV-003', 'Dell R740', 203, NULL, 4, '1', '2023-03-10', 'Public Website', '2025-12-05 23:49:21', '2025-12-05 23:49:21');
-INSERT INTO `biz_device` VALUES (4, 'Test Server Cluster', 'SRV-004', 'HP ProLiant', 203, NULL, 100, '1', '2023-05-20', 'Testing Env', '2025-12-05 23:49:21', '2025-12-05 23:49:21');
-INSERT INTO `biz_device` VALUES (5, 'HR Workstation 1', 'PC-001', 'Lenovo ThinkCentre', 202, NULL, 101, '1', '2023-06-01', 'Office PC', '2025-12-05 23:49:21', '2025-12-05 23:49:21');
-INSERT INTO `biz_device` VALUES (10, '华为300', 'HUAWEI300', 'HUAWEI300', 203, NULL, 100, '1', NULL, '', '2025-12-07 19:26:26', '2025-12-07 19:26:26');
--- Test Data: 1 IP
-INSERT INTO `biz_device` VALUES (11, 'Test Device 1 IP', 'TD-001', 'Virtual Machine', 201, NULL, 2, '1', '2025-12-22', 'Single IP Test', NOW(), NOW());
--- Test Data: 2 IPs
-INSERT INTO `biz_device` VALUES (12, 'Test Device 2 IPs', 'TD-002', 'Virtual Machine', 201, NULL, 2, '1', '2025-12-22', 'Double IP Test', NOW(), NOW());
--- Test Data: 3 IPs
-INSERT INTO `biz_device` VALUES (13, 'Test Device 3 IPs', 'TD-003', 'Physical Server', 201, NULL, 2, '1', '2025-12-22', 'Triple IP Test', NOW(), NOW());
+) ENGINE = InnoDB AUTO_INCREMENT = 1000 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '设备信息表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for biz_network_ip
@@ -94,32 +68,7 @@ CREATE TABLE `biz_network_ip`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_device_id`(`device_id` ASC) USING BTREE,
   INDEX `idx_ip_addr`(`ip_address` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 47 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '网络IP信息表' ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of biz_network_ip
--- ----------------------------
-INSERT INTO `biz_network_ip` VALUES (35, 1, NULL, '192.168.1.201', 0, '1', '1', '2025-12-07 21:07:48');
-INSERT INTO `biz_network_ip` VALUES (36, 2, 1, '192.168.1.50', 0, '1', '1', '2025-12-07 21:08:02');
-INSERT INTO `biz_network_ip` VALUES (37, 2, NULL, '192.168.1.51', 0, '1', '1', '2025-12-07 21:08:02');
-INSERT INTO `biz_network_ip` VALUES (38, 3, 2, '202.10.10.5', 1, '1', '1', '2025-12-07 21:08:23');
-INSERT INTO `biz_network_ip` VALUES (39, 3, NULL, '192.168.1.101', 0, '1', '1', '2025-12-07 21:08:23');
-INSERT INTO `biz_network_ip` VALUES (40, 3, NULL, '192.168.1.102', 0, '1', '1', '2025-12-07 21:08:23');
-INSERT INTO `biz_network_ip` VALUES (41, 5, 3, '10.10.10.1', 0, '1', '1', '2025-12-07 21:09:22');
-INSERT INTO `biz_network_ip` VALUES (42, 5, NULL, '10.10.10.2', 0, '1', '1', '2025-12-07 21:09:22');
-INSERT INTO `biz_network_ip` VALUES (43, 4, 4, '10.10.10.100', 0, '1', '1', '2025-12-07 21:10:43');
-INSERT INTO `biz_network_ip` VALUES (44, 4, 5, '10.10.10.101', 0, '1', '1', '2025-12-07 21:10:43');
-INSERT INTO `biz_network_ip` VALUES (45, 4, 6, '10.10.10.102', 0, '1', '1', '2025-12-07 21:10:43');
-INSERT INTO `biz_network_ip` VALUES (46, 10, 7, '192.168.1.200', 0, '1', '1', '2025-12-07 21:30:22');
--- Test Data: 1 IP (Device 11, MAC 8)
-INSERT INTO `biz_network_ip` VALUES (50, 11, 8, '192.168.100.1', 0, '1', '1', NOW());
--- Test Data: 2 IPs (Device 12, MAC 9)
-INSERT INTO `biz_network_ip` VALUES (51, 12, 9, '192.168.100.2', 0, '1', '1', NOW());
-INSERT INTO `biz_network_ip` VALUES (52, 12, 9, '10.0.0.2', 0, '1', '1', NOW());
--- Test Data: 3 IPs (Device 13, MAC 10)
-INSERT INTO `biz_network_ip` VALUES (53, 13, 10, '192.168.100.3', 0, '1', '1', NOW());
-INSERT INTO `biz_network_ip` VALUES (54, 13, 10, '10.0.0.3', 0, '1', '1', NOW());
-INSERT INTO `biz_network_ip` VALUES (55, 13, 10, '172.16.0.3', 0, '1', '1', NOW());
+) ENGINE = InnoDB AUTO_INCREMENT = 1000 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '网络IP信息表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for biz_network_mac
@@ -133,22 +82,7 @@ CREATE TABLE `biz_network_mac`  (
   `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '1' COMMENT '状态(1:使用中, 0:停用)',
   `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 8 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = 'MAC资源表' ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of biz_network_mac
--- ----------------------------
-INSERT INTO `biz_network_mac` VALUES (1, 2, 'eth0', 'AA:BB:CC:DD:EE:03', '1', NULL);
-INSERT INTO `biz_network_mac` VALUES (2, 3, 'eth0', 'AA:BB:CC:DD:EE:04', '1', NULL);
-INSERT INTO `biz_network_mac` VALUES (3, 5, 'eth0', 'AA:BB:CC:DD:EE:08', '1', NULL);
-INSERT INTO `biz_network_mac` VALUES (4, 4, 'eth0', 'AA:BB:CC:DD:EE:05', '1', NULL);
-INSERT INTO `biz_network_mac` VALUES (5, 4, 'eth1', 'AA:BB:CC:DD:EE:06', '1', NULL);
-INSERT INTO `biz_network_mac` VALUES (6, 4, 'eth2', 'AA:BB:CC:DD:EE:07', '1', NULL);
-INSERT INTO `biz_network_mac` VALUES (7, 10, 'eth0', 'AA:BB:CC:DD:EE:08', '1', NULL);
--- Test Data MACs
-INSERT INTO `biz_network_mac` VALUES (8, 11, 'eth0', 'AA:BB:CC:DD:EE:11', '1', 'Test Device 1');
-INSERT INTO `biz_network_mac` VALUES (9, 12, 'eth0', 'AA:BB:CC:DD:EE:12', '1', 'Test Device 2');
-INSERT INTO `biz_network_mac` VALUES (10, 13, 'eth0', 'AA:BB:CC:DD:EE:13', '1', 'Test Device 3');
+) ENGINE = InnoDB AUTO_INCREMENT = 1000 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = 'MAC资源表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for sys_dept
@@ -165,19 +99,7 @@ CREATE TABLE `sys_dept`  (
   `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '0' COMMENT '部门状态（0正常 1停用）',
   `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 204 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '部门表' ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of sys_dept
--- ----------------------------
-INSERT INTO `sys_dept` VALUES (100, 100, 'XXXX机构', 0, 'CEO', '13888888888', 'ceo@irms.com', '0', '2025-12-05 23:49:20');
-INSERT INTO `sys_dept` VALUES (101, 100, 'IT Dept', 1, 'IT Manager', '13999999999', 'it@irms.com', '0', '2025-12-05 23:49:20');
-INSERT INTO `sys_dept` VALUES (102, 100, 'HR Dept', 2, 'HR Manager', '13777777777', 'hr@irms.com', '0', '2025-12-05 23:49:20');
-INSERT INTO `sys_dept` VALUES (103, 101, 'Network Ops', 1, 'Net Admin', '13666666666', 'net@irms.com', '0', '2025-12-05 23:49:20');
-INSERT INTO `sys_dept` VALUES (200, 0, 'XXXX机构0', 0, '', '', '', '0', '2025-12-05 23:50:57');
-INSERT INTO `sys_dept` VALUES (201, 200, 'XXX部门1', 0, '', '', '', '0', '2025-12-05 23:51:09');
-INSERT INTO `sys_dept` VALUES (202, 200, 'XXX部门2', 0, '', '', '', '0', '2025-12-05 23:51:26');
-INSERT INTO `sys_dept` VALUES (203, 200, 'XXX部门3', 0, '', '', '', '0', '2025-12-05 23:51:37');
+) ENGINE = InnoDB AUTO_INCREMENT = 1000 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '部门表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for sys_user
@@ -196,17 +118,133 @@ CREATE TABLE `sys_user`  (
   `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `uk_user_name`(`user_name` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 103 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户信息表' ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of sys_user
--- ----------------------------
-INSERT INTO `sys_user` VALUES (1, 200, NULL, 'admin', 'Administrator', '$2a$10$BatQS7QlgGa9Lk0uUdImXuCqViIGFF6apI5d7G.UOpzFAFqya.sie', '15888888888', '0', 'Super Admin', '2025-12-05 23:49:20');
-INSERT INTO `sys_user` VALUES (2, 201, NULL, 'zhangsan1', '张三1', '', '15999999999', '0', 'Network Engineer', '2025-12-05 23:49:21');
-INSERT INTO `sys_user` VALUES (3, 202, NULL, 'zhangsan2', '张三2', '', '15777777777', '0', 'HR Specialist', '2025-12-05 23:49:21');
-INSERT INTO `sys_user` VALUES (4, 203, NULL, 'zhangsan3', '张三3', '', '15666666666', '0', 'Ops Operator', '2025-12-05 23:49:21');
-INSERT INTO `sys_user` VALUES (100, 201, NULL, 'zhangsan4', '张三4', '$2a$10$gaakGaCUiEXB7342u7ggheHrLiAnG08o.xZomL/MZ90kKN/iY5KFS', '', '0', '', '2025-12-07 19:25:42');
-INSERT INTO `sys_user` VALUES (101, 202, NULL, 'zhangsan5', '张三5', '$2a$10$v0glv5ZyvgXyuephjbOa4u.lctjcHEbDL/55CXYbz40gbzhO4evkO', '', '0', '', '2025-12-07 19:25:42');
-INSERT INTO `sys_user` VALUES (102, 203, NULL, 'zhangsan6', '张三6', '$2a$10$CpfDO9YKCUQIiUmENBvat.4fdII2fZUJiwfhSrkgXZk1wLyGfNohC', '', '0', '', '2025-12-07 19:25:42');
-
+) ENGINE = InnoDB AUTO_INCREMENT = 1000 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户信息表' ROW_FORMAT = DYNAMIC;
+-- Admin User
+INSERT INTO `sys_user` VALUES (1, NULL, NULL, 'admin', 'Administrator', '$2a$10$BatQS7QlgGa9Lk0uUdImXuCqViIGFF6apI5d7G.UOpzFAFqya.sie', '15888888888', '0', 'Super Admin', NOW());
+-- Departments
+INSERT INTO `sys_dept` VALUES (301, 0, '研发部', 0, 'Leader', '13800000000', 'dept@irms.com', '0', NOW());
+INSERT INTO `sys_dept` VALUES (302, 0, '市场部', 0, 'Leader', '13800000000', 'dept@irms.com', '0', NOW());
+INSERT INTO `sys_dept` VALUES (303, 0, '财务部', 0, 'Leader', '13800000000', 'dept@irms.com', '0', NOW());
+INSERT INTO `sys_dept` VALUES (304, 0, '人事部', 0, 'Leader', '13800000000', 'dept@irms.com', '0', NOW());
+INSERT INTO `sys_dept` VALUES (305, 0, '运维部', 0, 'Leader', '13800000000', 'dept@irms.com', '0', NOW());
+-- Offices
+INSERT INTO `biz_office` VALUES (10, '研发办公室', '8F-801', 'Generated', '0', NOW(), NOW());
+INSERT INTO `biz_office` VALUES (11, '市场办公室', '9F-901', 'Generated', '0', NOW(), NOW());
+INSERT INTO `biz_office` VALUES (12, '财务办公室', '10F-1001', 'Generated', '0', NOW(), NOW());
+INSERT INTO `biz_office` VALUES (13, '人事办公室', '11F-1101', 'Generated', '0', NOW(), NOW());
+INSERT INTO `biz_office` VALUES (14, '运维办公室', '12F-1201', 'Generated', '0', NOW(), NOW());
+-- Scenario: 1 IP
+INSERT INTO `sys_user` VALUES (1000, 303, 13, 'user1000', 'User 1000 (1 IP)', '$2a$10$BatQS7QlgGa9Lk0uUdImXuCqViIGFF6apI5d7G.UOpzFAFqya.sie', '1381000', '0', '1 IP', NOW());
+INSERT INTO `biz_device` VALUES (2000, 'Device-2000', 'CODE-2000', 'Model-X', 303, 13, 1000, '1', NOW(), '1 IP', NOW(), NOW());
+INSERT INTO `biz_network_mac` VALUES (3000, 2000, 'eth0', '52:54:00:f3:87:1d', '1', NULL);
+INSERT INTO `biz_network_ip` VALUES (4000, 2000, 3000, '192.168.1.0', 0, '1', '1', NOW());
+INSERT INTO `sys_user` VALUES (1001, 302, 13, 'user1001', 'User 1001 (1 IP)', '$2a$10$BatQS7QlgGa9Lk0uUdImXuCqViIGFF6apI5d7G.UOpzFAFqya.sie', '1381001', '0', '1 IP', NOW());
+INSERT INTO `biz_device` VALUES (2001, 'Device-2001', 'CODE-2001', 'Model-X', 302, 13, 1001, '1', NOW(), '1 IP', NOW(), NOW());
+INSERT INTO `biz_network_mac` VALUES (3001, 2001, 'eth0', '52:54:00:17:42:72', '1', NULL);
+INSERT INTO `biz_network_ip` VALUES (4001, 2001, 3001, '192.168.1.1', 0, '1', '1', NOW());
+INSERT INTO `sys_user` VALUES (1002, 304, 11, 'user1002', 'User 1002 (1 IP)', '$2a$10$BatQS7QlgGa9Lk0uUdImXuCqViIGFF6apI5d7G.UOpzFAFqya.sie', '1381002', '0', '1 IP', NOW());
+INSERT INTO `biz_device` VALUES (2002, 'Device-2002', 'CODE-2002', 'Model-X', 304, 11, 1002, '1', NOW(), '1 IP', NOW(), NOW());
+INSERT INTO `biz_network_mac` VALUES (3002, 2002, 'eth0', '52:54:00:b0:da:33', '1', NULL);
+INSERT INTO `biz_network_ip` VALUES (4002, 2002, 3002, '192.168.1.2', 0, '1', '1', NOW());
+INSERT INTO `sys_user` VALUES (1003, 301, 12, 'user1003', 'User 1003 (1 IP)', '$2a$10$BatQS7QlgGa9Lk0uUdImXuCqViIGFF6apI5d7G.UOpzFAFqya.sie', '1381003', '0', '1 IP', NOW());
+INSERT INTO `biz_device` VALUES (2003, 'Device-2003', 'CODE-2003', 'Model-X', 301, 12, 1003, '1', NOW(), '1 IP', NOW(), NOW());
+INSERT INTO `biz_network_mac` VALUES (3003, 2003, 'eth0', '52:54:00:a0:c1:b3', '1', NULL);
+INSERT INTO `biz_network_ip` VALUES (4003, 2003, 3003, '192.168.1.3', 0, '1', '1', NOW());
+INSERT INTO `sys_user` VALUES (1004, 304, 10, 'user1004', 'User 1004 (1 IP)', '$2a$10$BatQS7QlgGa9Lk0uUdImXuCqViIGFF6apI5d7G.UOpzFAFqya.sie', '1381004', '0', '1 IP', NOW());
+INSERT INTO `biz_device` VALUES (2004, 'Device-2004', 'CODE-2004', 'Model-X', 304, 10, 1004, '1', NOW(), '1 IP', NOW(), NOW());
+INSERT INTO `biz_network_mac` VALUES (3004, 2004, 'eth0', '52:54:00:e8:ee:b3', '1', NULL);
+INSERT INTO `biz_network_ip` VALUES (4004, 2004, 3004, '192.168.1.4', 0, '1', '1', NOW());
+-- Scenario: 2 IPs
+INSERT INTO `sys_user` VALUES (1005, 303, 14, 'user1005', 'User 1005 (2 IPs)', '$2a$10$BatQS7QlgGa9Lk0uUdImXuCqViIGFF6apI5d7G.UOpzFAFqya.sie', '1381005', '0', '2 IPs', NOW());
+INSERT INTO `biz_device` VALUES (2005, 'Device-2005', 'CODE-2005', 'Model-X', 303, 14, 1005, '1', NOW(), '2 IPs', NOW(), NOW());
+INSERT INTO `biz_network_mac` VALUES (3005, 2005, 'eth0', '52:54:00:99:73:66', '1', NULL);
+INSERT INTO `biz_network_ip` VALUES (4005, 2005, 3005, '192.168.1.5', 0, '1', '1', NOW());
+INSERT INTO `biz_network_ip` VALUES (4006, 2005, 3005, '192.168.1.6', 0, '1', '1', NOW());
+INSERT INTO `sys_user` VALUES (1006, 303, 11, 'user1006', 'User 1006 (2 IPs)', '$2a$10$BatQS7QlgGa9Lk0uUdImXuCqViIGFF6apI5d7G.UOpzFAFqya.sie', '1381006', '0', '2 IPs', NOW());
+INSERT INTO `biz_device` VALUES (2006, 'Device-2006', 'CODE-2006', 'Model-X', 303, 11, 1006, '1', NOW(), '2 IPs', NOW(), NOW());
+INSERT INTO `biz_network_mac` VALUES (3006, 2006, 'eth0', '52:54:00:c4:62:09', '1', NULL);
+INSERT INTO `biz_network_ip` VALUES (4007, 2006, 3006, '192.168.1.7', 0, '1', '1', NOW());
+INSERT INTO `biz_network_ip` VALUES (4008, 2006, 3006, '192.168.1.8', 0, '1', '1', NOW());
+INSERT INTO `sys_user` VALUES (1007, 305, 10, 'user1007', 'User 1007 (2 IPs)', '$2a$10$BatQS7QlgGa9Lk0uUdImXuCqViIGFF6apI5d7G.UOpzFAFqya.sie', '1381007', '0', '2 IPs', NOW());
+INSERT INTO `biz_device` VALUES (2007, 'Device-2007', 'CODE-2007', 'Model-X', 305, 10, 1007, '1', NOW(), '2 IPs', NOW(), NOW());
+INSERT INTO `biz_network_mac` VALUES (3007, 2007, 'eth0', '52:54:00:f2:d2:1c', '1', NULL);
+INSERT INTO `biz_network_ip` VALUES (4009, 2007, 3007, '192.168.1.9', 0, '1', '1', NOW());
+INSERT INTO `biz_network_ip` VALUES (4010, 2007, 3007, '192.168.1.10', 0, '1', '1', NOW());
+INSERT INTO `sys_user` VALUES (1008, 301, 10, 'user1008', 'User 1008 (2 IPs)', '$2a$10$BatQS7QlgGa9Lk0uUdImXuCqViIGFF6apI5d7G.UOpzFAFqya.sie', '1381008', '0', '2 IPs', NOW());
+INSERT INTO `biz_device` VALUES (2008, 'Device-2008', 'CODE-2008', 'Model-X', 301, 10, 1008, '1', NOW(), '2 IPs', NOW(), NOW());
+INSERT INTO `biz_network_mac` VALUES (3008, 2008, 'eth0', '52:54:00:e6:a8:d4', '1', NULL);
+INSERT INTO `biz_network_ip` VALUES (4011, 2008, 3008, '192.168.1.11', 0, '1', '1', NOW());
+INSERT INTO `biz_network_ip` VALUES (4012, 2008, 3008, '192.168.1.12', 0, '1', '1', NOW());
+INSERT INTO `sys_user` VALUES (1009, 302, 13, 'user1009', 'User 1009 (2 IPs)', '$2a$10$BatQS7QlgGa9Lk0uUdImXuCqViIGFF6apI5d7G.UOpzFAFqya.sie', '1381009', '0', '2 IPs', NOW());
+INSERT INTO `biz_device` VALUES (2009, 'Device-2009', 'CODE-2009', 'Model-X', 302, 13, 1009, '1', NOW(), '2 IPs', NOW(), NOW());
+INSERT INTO `biz_network_mac` VALUES (3009, 2009, 'eth0', '52:54:00:1c:3c:bd', '1', NULL);
+INSERT INTO `biz_network_ip` VALUES (4013, 2009, 3009, '192.168.1.13', 0, '1', '1', NOW());
+INSERT INTO `biz_network_ip` VALUES (4014, 2009, 3009, '192.168.1.14', 0, '1', '1', NOW());
+-- Scenario: 3 IPs
+INSERT INTO `sys_user` VALUES (1010, 305, 11, 'user1010', 'User 1010 (3 IPs)', '$2a$10$BatQS7QlgGa9Lk0uUdImXuCqViIGFF6apI5d7G.UOpzFAFqya.sie', '1381010', '0', '3 IPs', NOW());
+INSERT INTO `biz_device` VALUES (2010, 'Device-2010', 'CODE-2010', 'Model-X', 305, 11, 1010, '1', NOW(), '3 IPs', NOW(), NOW());
+INSERT INTO `biz_network_mac` VALUES (3010, 2010, 'eth0', '52:54:00:25:94:df', '1', NULL);
+INSERT INTO `biz_network_ip` VALUES (4015, 2010, 3010, '192.168.1.15', 0, '1', '1', NOW());
+INSERT INTO `biz_network_ip` VALUES (4016, 2010, 3010, '192.168.1.16', 0, '1', '1', NOW());
+INSERT INTO `biz_network_ip` VALUES (4017, 2010, 3010, '192.168.1.17', 0, '1', '1', NOW());
+INSERT INTO `sys_user` VALUES (1011, 303, 10, 'user1011', 'User 1011 (3 IPs)', '$2a$10$BatQS7QlgGa9Lk0uUdImXuCqViIGFF6apI5d7G.UOpzFAFqya.sie', '1381011', '0', '3 IPs', NOW());
+INSERT INTO `biz_device` VALUES (2011, 'Device-2011', 'CODE-2011', 'Model-X', 303, 10, 1011, '1', NOW(), '3 IPs', NOW(), NOW());
+INSERT INTO `biz_network_mac` VALUES (3011, 2011, 'eth0', '52:54:00:bf:7a:c6', '1', NULL);
+INSERT INTO `biz_network_ip` VALUES (4018, 2011, 3011, '192.168.1.18', 0, '1', '1', NOW());
+INSERT INTO `biz_network_ip` VALUES (4019, 2011, 3011, '192.168.1.19', 0, '1', '1', NOW());
+INSERT INTO `biz_network_ip` VALUES (4020, 2011, 3011, '192.168.1.20', 0, '1', '1', NOW());
+INSERT INTO `sys_user` VALUES (1012, 305, 13, 'user1012', 'User 1012 (3 IPs)', '$2a$10$BatQS7QlgGa9Lk0uUdImXuCqViIGFF6apI5d7G.UOpzFAFqya.sie', '1381012', '0', '3 IPs', NOW());
+INSERT INTO `biz_device` VALUES (2012, 'Device-2012', 'CODE-2012', 'Model-X', 305, 13, 1012, '1', NOW(), '3 IPs', NOW(), NOW());
+INSERT INTO `biz_network_mac` VALUES (3012, 2012, 'eth0', '52:54:00:04:cc:ad', '1', NULL);
+INSERT INTO `biz_network_ip` VALUES (4021, 2012, 3012, '192.168.1.21', 0, '1', '1', NOW());
+INSERT INTO `biz_network_ip` VALUES (4022, 2012, 3012, '192.168.1.22', 0, '1', '1', NOW());
+INSERT INTO `biz_network_ip` VALUES (4023, 2012, 3012, '192.168.1.23', 0, '1', '1', NOW());
+INSERT INTO `sys_user` VALUES (1013, 301, 14, 'user1013', 'User 1013 (3 IPs)', '$2a$10$BatQS7QlgGa9Lk0uUdImXuCqViIGFF6apI5d7G.UOpzFAFqya.sie', '1381013', '0', '3 IPs', NOW());
+INSERT INTO `biz_device` VALUES (2013, 'Device-2013', 'CODE-2013', 'Model-X', 301, 14, 1013, '1', NOW(), '3 IPs', NOW(), NOW());
+INSERT INTO `biz_network_mac` VALUES (3013, 2013, 'eth0', '52:54:00:1f:07:74', '1', NULL);
+INSERT INTO `biz_network_ip` VALUES (4024, 2013, 3013, '192.168.1.24', 0, '1', '1', NOW());
+INSERT INTO `biz_network_ip` VALUES (4025, 2013, 3013, '192.168.1.25', 0, '1', '1', NOW());
+INSERT INTO `biz_network_ip` VALUES (4026, 2013, 3013, '192.168.1.26', 0, '1', '1', NOW());
+INSERT INTO `sys_user` VALUES (1014, 305, 11, 'user1014', 'User 1014 (3 IPs)', '$2a$10$BatQS7QlgGa9Lk0uUdImXuCqViIGFF6apI5d7G.UOpzFAFqya.sie', '1381014', '0', '3 IPs', NOW());
+INSERT INTO `biz_device` VALUES (2014, 'Device-2014', 'CODE-2014', 'Model-X', 305, 11, 1014, '1', NOW(), '3 IPs', NOW(), NOW());
+INSERT INTO `biz_network_mac` VALUES (3014, 2014, 'eth0', '52:54:00:5a:37:76', '1', NULL);
+INSERT INTO `biz_network_ip` VALUES (4027, 2014, 3014, '192.168.1.27', 0, '1', '1', NOW());
+INSERT INTO `biz_network_ip` VALUES (4028, 2014, 3014, '192.168.1.28', 0, '1', '1', NOW());
+INSERT INTO `biz_network_ip` VALUES (4029, 2014, 3014, '192.168.1.29', 0, '1', '1', NOW());
+-- Scenario: Multi-Device
+INSERT INTO `sys_user` VALUES (1015, 301, 11, 'user1015', 'User 1015 (Multi-Device)', '$2a$10$BatQS7QlgGa9Lk0uUdImXuCqViIGFF6apI5d7G.UOpzFAFqya.sie', '1381015', '0', 'Multi-Device', NOW());
+INSERT INTO `biz_device` VALUES (2015, 'Device-2015', 'CODE-2015', 'Model-X', 301, 11, 1015, '1', NOW(), 'Multi-Device', NOW(), NOW());
+INSERT INTO `biz_network_mac` VALUES (3015, 2015, 'eth0', '52:54:00:b5:d3:0d', '1', NULL);
+INSERT INTO `biz_network_ip` VALUES (4030, 2015, 3015, '192.168.1.30', 0, '1', '1', NOW());
+INSERT INTO `biz_device` VALUES (2016, 'Device-2016', 'CODE-2016', 'Model-X', 301, 11, 1015, '1', NOW(), 'Multi-Device', NOW(), NOW());
+INSERT INTO `biz_network_mac` VALUES (3016, 2016, 'eth0', '52:54:00:d2:81:46', '1', NULL);
+INSERT INTO `biz_network_ip` VALUES (4031, 2016, 3016, '192.168.1.31', 0, '1', '1', NOW());
+INSERT INTO `sys_user` VALUES (1016, 305, 11, 'user1016', 'User 1016 (Multi-Device)', '$2a$10$BatQS7QlgGa9Lk0uUdImXuCqViIGFF6apI5d7G.UOpzFAFqya.sie', '1381016', '0', 'Multi-Device', NOW());
+INSERT INTO `biz_device` VALUES (2017, 'Device-2017', 'CODE-2017', 'Model-X', 305, 11, 1016, '1', NOW(), 'Multi-Device', NOW(), NOW());
+INSERT INTO `biz_network_mac` VALUES (3017, 2017, 'eth0', '52:54:00:25:ca:b3', '1', NULL);
+INSERT INTO `biz_network_ip` VALUES (4032, 2017, 3017, '192.168.1.32', 0, '1', '1', NOW());
+INSERT INTO `biz_device` VALUES (2018, 'Device-2018', 'CODE-2018', 'Model-X', 305, 11, 1016, '1', NOW(), 'Multi-Device', NOW(), NOW());
+INSERT INTO `biz_network_mac` VALUES (3018, 2018, 'eth0', '52:54:00:56:a3:3f', '1', NULL);
+INSERT INTO `biz_network_ip` VALUES (4033, 2018, 3018, '192.168.1.33', 0, '1', '1', NOW());
+INSERT INTO `sys_user` VALUES (1017, 304, 13, 'user1017', 'User 1017 (Multi-Device)', '$2a$10$BatQS7QlgGa9Lk0uUdImXuCqViIGFF6apI5d7G.UOpzFAFqya.sie', '1381017', '0', 'Multi-Device', NOW());
+INSERT INTO `biz_device` VALUES (2019, 'Device-2019', 'CODE-2019', 'Model-X', 304, 13, 1017, '1', NOW(), 'Multi-Device', NOW(), NOW());
+INSERT INTO `biz_network_mac` VALUES (3019, 2019, 'eth0', '52:54:00:22:ca:73', '1', NULL);
+INSERT INTO `biz_network_ip` VALUES (4034, 2019, 3019, '192.168.1.34', 0, '1', '1', NOW());
+INSERT INTO `biz_device` VALUES (2020, 'Device-2020', 'CODE-2020', 'Model-X', 304, 13, 1017, '1', NOW(), 'Multi-Device', NOW(), NOW());
+INSERT INTO `biz_network_mac` VALUES (3020, 2020, 'eth0', '52:54:00:5c:60:c7', '1', NULL);
+INSERT INTO `biz_network_ip` VALUES (4035, 2020, 3020, '192.168.1.35', 0, '1', '1', NOW());
+INSERT INTO `sys_user` VALUES (1018, 303, 11, 'user1018', 'User 1018 (Multi-Device)', '$2a$10$BatQS7QlgGa9Lk0uUdImXuCqViIGFF6apI5d7G.UOpzFAFqya.sie', '1381018', '0', 'Multi-Device', NOW());
+INSERT INTO `biz_device` VALUES (2021, 'Device-2021', 'CODE-2021', 'Model-X', 303, 11, 1018, '1', NOW(), 'Multi-Device', NOW(), NOW());
+INSERT INTO `biz_network_mac` VALUES (3021, 2021, 'eth0', '52:54:00:c6:f2:c6', '1', NULL);
+INSERT INTO `biz_network_ip` VALUES (4036, 2021, 3021, '192.168.1.36', 0, '1', '1', NOW());
+INSERT INTO `biz_device` VALUES (2022, 'Device-2022', 'CODE-2022', 'Model-X', 303, 11, 1018, '1', NOW(), 'Multi-Device', NOW(), NOW());
+INSERT INTO `biz_network_mac` VALUES (3022, 2022, 'eth0', '52:54:00:40:ae:fd', '1', NULL);
+INSERT INTO `biz_network_ip` VALUES (4037, 2022, 3022, '192.168.1.37', 0, '1', '1', NOW());
+INSERT INTO `sys_user` VALUES (1019, 305, 12, 'user1019', 'User 1019 (Multi-Device)', '$2a$10$BatQS7QlgGa9Lk0uUdImXuCqViIGFF6apI5d7G.UOpzFAFqya.sie', '1381019', '0', 'Multi-Device', NOW());
+INSERT INTO `biz_device` VALUES (2023, 'Device-2023', 'CODE-2023', 'Model-X', 305, 12, 1019, '1', NOW(), 'Multi-Device', NOW(), NOW());
+INSERT INTO `biz_network_mac` VALUES (3023, 2023, 'eth0', '52:54:00:14:f0:9e', '1', NULL);
+INSERT INTO `biz_network_ip` VALUES (4038, 2023, 3023, '192.168.1.38', 0, '1', '1', NOW());
+INSERT INTO `biz_device` VALUES (2024, 'Device-2024', 'CODE-2024', 'Model-X', 305, 12, 1019, '1', NOW(), 'Multi-Device', NOW(), NOW());
+INSERT INTO `biz_network_mac` VALUES (3024, 2024, 'eth0', '52:54:00:b3:35:bf', '1', NULL);
+INSERT INTO `biz_network_ip` VALUES (4039, 2024, 3024, '192.168.1.39', 0, '1', '1', NOW());
 SET FOREIGN_KEY_CHECKS = 1;

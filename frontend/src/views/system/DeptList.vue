@@ -126,23 +126,22 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="space-y-4">
-    <div class="flex justify-between items-center">
-      <div class="font-bold text-lg">部门管理</div>
-      <div class="flex gap-2 items-center">
+  <div class="p-4">
+    <n-card title="部门管理">
+      <n-space vertical>
+        <n-space>
           <n-select v-model:value="searchStatus" :options="statusOptions" class="w-32" @update:value="fetchData" />
           <n-button type="primary" @click="handleAdd">新增部门</n-button>
-      </div>
-    </div>
+        </n-space>
 
-    <n-card :bordered="false" class="shadow-sm rounded-xl">
-      <n-data-table
-        :columns="columns"
-        :data="data"
-        :loading="loading"
-        :row-key="(row) => row.id"
-        default-expand-all
-      />
+        <n-data-table
+          :columns="columns"
+          :data="data"
+          :loading="loading"
+          :row-key="(row) => row.id"
+          default-expand-all
+        />
+      </n-space>
     </n-card>
 
     <n-modal v-model:show="showModal" preset="card" :title="formValue.id ? '编辑部门' : '新增部门'" class="max-w-md">

@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ref, onMounted, h, reactive, watch } from 'vue'
 import { useRoute } from 'vue-router'
-import { NCard, NDataTable, NButton, NTag, useMessage, NModal, NForm, NFormItem, NInput, NSelect, NTreeSelect, NDynamicInput, NInputNumber, NSpace, NIcon, NInputGroup, NTooltip, NDivider } from 'naive-ui'
+import { NCard, NDataTable, NButton, NTag, useMessage, NModal, NForm, NFormItem, NInput, NSelect, NTreeSelect, NDynamicInput, NInputNumber, NSpace, NIcon, NInputGroup, NTooltip, NDivider, NCollapseTransition } from 'naive-ui'
 import type { DataTableColumns } from 'naive-ui'
 import request from '../../utils/request'
-import { LaptopOutline, GlobeOutline, WifiOutline, CloudOutline, HardwareChipOutline } from '@vicons/ionicons5'
+import { LaptopOutline, GlobeOutline, WifiOutline, CloudOutline, HardwareChipOutline, ChevronDownOutline, ChevronUpOutline } from '@vicons/ionicons5'
 
 const message = useMessage()
 const loading = ref(false)
@@ -12,6 +12,7 @@ const data = ref([])
 const showModal = ref(false)
 const addLoading = ref(false)
 const exportLoading = ref(false)
+const showAdvanced = ref(false)
 
 // Options
 const deptOptions = ref([])
@@ -56,73 +57,45 @@ const statusOptions = [
 
 const columns: DataTableColumns<any> = [
   { 
-    title: '用户姓名', 
+    title: '使用人', 
     key: 'owner',
-    width: 100,
+    width: 150,
     render(row) {
-      return row.owner?.nickName || '未分配'
-    }
-  },
-  { 
-    title: '归属部门', 
-    key: 'dept',
-    width: 120,
-    render(row) {
-      return row.dept?.deptName || '-'
-    }
-  },
-  { 
-    title: '办公室', 
-    key: 'office',
-    width: 120,
-    render(row) {
-      return row.office?.officeName || '-'
+      const name = row.owner?.nickName || '未分配'
+      const office = row.office?.officeName ? ` (${row.office.officeName})` : ''
+      return name + office
     }
   },
   { title: '设备名称', key: 'deviceName', width: 150, ellipsis: true },
   { 
-    title: '型号', 
+    title: '设备型号', 
     key: 'model',
     width: 120,
     ellipsis: true,
     render(row) {
-      return h(NTag, { type: 'info', bordered: false }, { default: () => row.model || '无' })
+      return h(NTag, { type: 'info', bordered: false, size: 'small' }, { default: () => row.model || '无' })
     }
   },
-  { title: '设备编号', key: 'deviceCode', width: 120, ellipsis: true },
   {
-    title: 'IP及MAC地址',
+    title: 'IP 数量',
     key: 'network',
+    width: 100,
     render(row) {
-        const elements: any[] = []
-        
-        // 1. Render MACs and their associated IPs
-        if (row.networkMacs && row.networkMacs.length > 0) {
+        let count = 0
+        if (row.networkMacs) {
             row.networkMacs.forEach((mac: any) => {
-                const ips = mac.ips || []
-                if (ips.length === 0) {
-                     elements.push(h('div', { class: 'px-2 py-1 rounded border border-green-200 bg-green-50 text-green-700 text-xs' }, `MAC地址: ${mac.macAddress || '无'}`))
-                } else {
-                    ips.forEach((ip: any) => {
-                        elements.push(h('div', { class: 'px-2 py-1 rounded border border-green-200 bg-green-50 text-green-700 text-xs' }, `IP地址: ${ip.ipAddress} (MAC: ${mac.macAddress || '无'})`))
-                    })
-                }
+                count += (mac.ips || []).length
             })
+        }
+        if (row.networkIps) {
+            const unassociatedIps = row.networkIps.filter((ip: any) => !ip.macId)
+            count += unassociatedIps.length
         }
         
-        // 2. Render IPs that are NOT associated with any MAC (macId is null)
-        if (row.networkIps && row.networkIps.length > 0) {
-            const unassociatedIps = row.networkIps.filter((ip: any) => !ip.macId)
-            unassociatedIps.forEach((ip: any) => {
-                elements.push(h('div', { class: 'px-2 py-1 rounded border border-green-200 bg-green-50 text-green-700 text-xs' }, `IP地址: ${ip.ipAddress} (未关联网卡)`))
-            })
-        }
-
-        if (elements.length === 0) return '-'
-        return h('div', { class: 'flex flex-col gap-1' }, elements)
+        if (count === 0) return '-'
+        return h(NTag, { type: 'success', bordered: false, size: 'small' }, { default: () => `IP: ${count} 个` })
     }
   },
-  { title: '备注', key: 'remark', width: 150, ellipsis: true },
   {
     title: '操作',
     key: 'actions',
@@ -134,7 +107,7 @@ const columns: DataTableColumns<any> = [
 ]
 
 const spanMethod = ({ row, column, rowIndex }: any) => {
-  if (['owner', 'dept', 'office', 'actions'].includes(column.key)) {
+  if (['owner', 'actions'].includes(column.key)) {
     const ownerId = row.ownerId
     if (!ownerId) return { rowspan: 1, colspan: 1 }
     
@@ -365,38 +338,47 @@ watch(() => route.query, () => {
     <div class="flex flex-col gap-4">
       <div class="flex justify-between items-center">
          <h2 class="text-2xl font-bold text-gray-800 dark:text-white">设备管理</h2>
-         <n-space>
-             <n-button type="info" ghost :loading="exportLoading" @click="handleExport">导出 Excel</n-button>
-             <n-button type="primary" class="bg-primary" @click="handleAdd">新增设备</n-button>
-         </n-space>
       </div>
       
       <!-- Search Bar -->
       <n-card :bordered="false" class="rounded-xl shadow-sm bg-gray-50/50">
         <n-space vertical>
-           <!-- Row 1 -->
+           <!-- Primary Search Row -->
            <n-space>
              <n-input v-model:value="query.fuzzy" placeholder="模糊搜索 (名称/型号/备注)" class="w-64" clearable />
-             <n-select v-model:value="query.netType" :options="netTypeOptions" placeholder="网络类型" class="w-32" clearable />
-             <n-tree-select 
-                v-model:value="query.deptId" 
-                :options="deptOptions" 
-                label-field="deptName" 
-                placeholder="选择部门" 
-                class="w-48"
-                clearable
-             />
              <n-input v-model:value="query.ownerName" placeholder="用户姓名" clearable />
-             <n-select v-model:value="query.officeId" :options="officeOptions" placeholder="选择办公室" class="w-48" clearable />
-           </n-space>
-           <!-- Row 2 -->
-           <n-space>
-             <n-input v-model:value="query.ipAddress" placeholder="IP地址 1" clearable />
-             <n-input v-model:value="query.ipAddress2" placeholder="IP地址 2 (双IP匹配)" clearable />
-             <n-input v-model:value="query.macAddress" placeholder="MAC地址" clearable />
-             <n-input-number v-model:value="query.minIpCount" placeholder="最小IP数" class="w-32" clearable />
+             <n-input v-model:value="query.ipAddress" placeholder="IP地址" clearable />
              <n-button type="primary" @click="fetchData">搜索</n-button>
+             <n-button quaternary @click="showAdvanced = !showAdvanced">
+                {{ showAdvanced ? '收起筛选' : '高级筛选' }}
+                <template #icon>
+                  <n-icon>
+                    <component :is="showAdvanced ? 'ChevronUpOutline' : 'ChevronDownOutline'" />
+                  </n-icon>
+                </template>
+             </n-button>
+             <n-button type="primary" class="bg-primary" @click="handleAdd">新增设备</n-button>
            </n-space>
+           
+           <!-- Advanced Search Row -->
+           <n-collapse-transition :show="showAdvanced">
+             <n-space class="mt-2 p-4 bg-gray-100/50 rounded-lg">
+                <n-select v-model:value="query.netType" :options="netTypeOptions" placeholder="网络类型" class="w-32" clearable />
+                <n-tree-select 
+                   v-model:value="query.deptId" 
+                   :options="deptOptions" 
+                   key-field="id"
+                   label-field="deptName" 
+                   placeholder="选择部门" 
+                   class="w-48"
+                   clearable
+                />
+                <n-select v-model:value="query.officeId" :options="officeOptions" placeholder="选择办公室" class="w-48" clearable />
+                <n-input v-model:value="query.ipAddress2" placeholder="IP地址 2 (双IP匹配)" clearable />
+                <n-input v-model:value="query.macAddress" placeholder="MAC地址" clearable />
+                <n-input-number v-model:value="query.minIpCount" placeholder="最小IP数" class="w-32" clearable />
+             </n-space>
+           </n-collapse-transition>
         </n-space>
       </n-card>
     </div>
@@ -410,6 +392,9 @@ watch(() => route.query, () => {
         :bordered="true"
         :span-method="spanMethod"
       />
+      <div class="mt-4">
+        <n-button type="info" ghost :loading="exportLoading" @click="handleExport">导出 Excel</n-button>
+      </div>
     </n-card>
 
     <n-modal v-model:show="showModal" preset="card" title="设备信息" class="max-w-5xl">
@@ -480,7 +465,7 @@ watch(() => route.query, () => {
                   <n-input v-model:value="ip.ipAddress" :disabled="isReadOnly" placeholder="IP地址" />
                   <n-select v-model:value="ip.netType" :options="netTypeOptions" :disabled="isReadOnly" class="w-28" />
                   <div v-if="!isReadOnly" class="flex gap-1">
-                      <n-button circle size="tiny" color="#d03050" @click="removeIp(mac, ipIdx)" :disabled="mac.ips.length <= 1">
+                      <n-button circle size="tiny" color="#d03050" @click="removeIp(mac, Number(ipIdx))" :disabled="mac.ips.length <= 1">
                         <span class="font-bold text-white text-sm">−</span>
                       </n-button>
                       <n-button v-if="ipIdx === mac.ips.length - 1" circle size="tiny" color="#18a058" @click="addIp(mac)">
