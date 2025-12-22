@@ -10,7 +10,7 @@
 - **多维聚合分析**：直观展示企业内部 IP 资源的分布情况，包括单设备 IP 占用统计、网段使用率等。
 - **交互式下钻 (Drill-down)**：图表与数据深度联动，点击统计维度即可精准跳转并过滤出对应的资产列表。
 
-### 2. � 用户资产管理视图 (User-Centric Asset View)
+### 2. 👤 用户资产管理视图 (User-Centric Asset View)
 - **行合并展示**：设备列表以用户为中心进行聚合，自动合并重复的人员、部门、办公室信息，清晰展示每个用户名下的所有 IT 资产。
 - **批量资产维护**：支持在一个界面内为同一用户批量添加、修改或移除多台设备，极大提升了资产盘点与录入的效率。
 - **查看/修改模式切换**：默认进入只读查看模式，防止误操作；点击“修改”后方可进行动态增减设备及配置。
@@ -32,7 +32,7 @@
 
 ---
 
-## � 系统截图 (System Screenshots)
+## 📸 系统截图 (System Screenshots)
 
 <div align="center">
   <img src="imgs/1.png" width="45%" />
@@ -43,7 +43,7 @@
 
 ---
 
-## �🚀 快速开始 (Quick Start)
+## 🚀 快速开始 (Quick Start)
 
 ### 1. 环境要求
 - **Java**: JDK 17+
@@ -52,7 +52,12 @@
 - **Maven**: 3.8+
 
 ### 2. 数据库准备
-1. 创建数据库 `irms`，字符集选择 `utf8mb4`。
+1. 创建数据库 `irms`：
+   ```sql
+   CREATE DATABASE IF NOT EXISTS irms
+     DEFAULT CHARACTER SET utf8mb4
+     DEFAULT COLLATE utf8mb4_general_ci;
+   ```
 2. 运行根目录下的 `irms.sql` 脚本初始化表结构与基础数据。
 
 ### 3. 启动项目
