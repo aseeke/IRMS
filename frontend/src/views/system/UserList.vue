@@ -168,9 +168,9 @@ const handleSubmit = async () => {
       return
   }
   
-  const nickNameRegex = /^[\u4e00-\u9fa50-9]+$/
+  const nickNameRegex = /^[\u4e00-\u9fa5a-zA-Z0-9\s]+$/
   if (!nickNameRegex.test(formValue.nickName)) {
-      message.warning('用户姓名只能包含中文和数字')
+      message.warning('用户姓名只能包含中文、英文、数字和空格')
       return
   }
   
@@ -225,7 +225,7 @@ onMounted(() => {
           <n-input v-model:value="formValue.userName" placeholder="英文+数字" :disabled="!!formValue.id" />
         </n-form-item>
         <n-form-item label="用户姓名" required>
-          <n-input v-model:value="formValue.nickName" placeholder="中文+数字" :disabled="!!formValue.id" />
+          <n-input v-model:value="formValue.nickName" placeholder="中英文+数字" :disabled="!!formValue.id" />
         </n-form-item>
         <n-form-item label="所属部门" required>
            <n-tree-select 

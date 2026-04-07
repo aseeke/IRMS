@@ -144,15 +144,26 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         }
 
         com.baomidou.mybatisplus.extension.plugins.pagination.Page<User> result = this.page(page, wrapper);
-        result.getRecords().forEach(u -> {
-            u.setPassword(null);
-            if (u.getDeptId() != null) {
-                u.setDept(deptMapper.selectById(u.getDeptId()));
-            }
-            if (u.getOfficeId() != null) {
-                u.setOffice(officeMapper.selectById(u.getOfficeId()));
-            }
-        });
+        java.util.List<User> records = result.getRecords();
+        if (records != null && !records.isEmpty()) {
+            java.util.Set<Long> deptIds = records.stream().map(User::getDeptId).filter(java.util.Objects::nonNull).collect(java.util.stream.Collectors.toSet());
+            java.util.Set<Long> officeIds = records.stream().map(User::getOfficeId).filter(java.util.Objects::nonNull).collect(java.util.stream.Collectors.toSet());
+
+            java.util.Map<Long, com.irms.entity.Dept> deptMap = deptIds.isEmpty() ? java.util.Collections.emptyMap() :
+                    deptMapper.selectBatchIds(deptIds).stream().collect(java.util.stream.Collectors.toMap(com.irms.entity.Dept::getId, d -> d));
+            java.util.Map<Long, com.irms.entity.Office> officeMap = officeIds.isEmpty() ? java.util.Collections.emptyMap() :
+                    officeMapper.selectBatchIds(officeIds).stream().collect(java.util.stream.Collectors.toMap(com.irms.entity.Office::getId, o -> o));
+
+            records.forEach(u -> {
+                u.setPassword(null);
+                if (u.getDeptId() != null) {
+                    u.setDept(deptMap.get(u.getDeptId()));
+                }
+                if (u.getOfficeId() != null) {
+                    u.setOffice(officeMap.get(u.getOfficeId()));
+                }
+            });
+        }
         return result;
     }
 

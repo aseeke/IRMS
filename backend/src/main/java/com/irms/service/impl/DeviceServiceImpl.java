@@ -165,48 +165,14 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
 
         // 5. IP Count Filter (Min or Exact) - Person Centric
         if ((minIpCount != null && minIpCount > 0) || (ipCount != null && ipCount > 0)) {
-            // 5.1 Fetch All Devices to map deviceId to ownerId
-            List<Device> devices = this
-                    .list(new com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper<Device>()
-                            .select(Device::getId, Device::getOwnerId));
-            java.util.Map<Long, Long> deviceToOwner = devices.stream()
-                    .filter(d -> d.getOwnerId() != null)
-                    .collect(java.util.stream.Collectors.toMap(Device::getId, Device::getOwnerId, (a, b) -> a));
-
-            // 5.2 Fetch All Valid IPs
-            List<NetworkIp> allIps = networkIpMapper
-                    .selectList(new com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper<NetworkIp>()
-                            .select(NetworkIp::getDeviceId, NetworkIp::getIpAddress)
-                            .isNotNull(NetworkIp::getIpAddress)
-                            .ne(NetworkIp::getIpAddress, ""));
-
-            // 5.3 Count Distinct IPs per Person (Owner)
-            java.util.Map<Long, java.util.Set<String>> personIpSets = new java.util.HashMap<>();
-            for (NetworkIp ip : allIps) {
-                Long ownerId = deviceToOwner.get(ip.getDeviceId());
-                if (ownerId != null) {
-                    personIpSets.computeIfAbsent(ownerId, k -> new java.util.HashSet<>())
-                            .add(ip.getIpAddress());
-                }
+            List<Long> matchingOwnerIds;
+            if (ipCount != null && ipCount > 0) {
+                matchingOwnerIds = baseMapper.findOwnerIdsByExactIpCount(ipCount);
+            } else {
+                matchingOwnerIds = baseMapper.findOwnerIdsByMinIpCount(minIpCount);
             }
 
-            // 5.4 Identify Matching Owners
-            java.util.Set<Long> matchingOwnerIds = new java.util.HashSet<>();
-            personIpSets.forEach((ownerId, set) -> {
-                int size = set.size();
-                boolean match = false;
-                if (ipCount != null && ipCount > 0) {
-                    match = (size == ipCount.intValue());
-                } else if (minIpCount != null && minIpCount > 0) {
-                    match = (size >= minIpCount);
-                }
-                if (match) {
-                    matchingOwnerIds.add(ownerId);
-                }
-            });
-
-            // 5.5 Filter Devices by Matching Owners
-            if (matchingOwnerIds.isEmpty()) {
+            if (matchingOwnerIds == null || matchingOwnerIds.isEmpty()) {
                 wrapper.eq(Device::getId, -1L); // No match
             } else {
                 wrapper.in(Device::getOwnerId, matchingOwnerIds);
@@ -234,20 +200,44 @@ public class DeviceServiceImpl extends ServiceImpl<DeviceMapper, Device> impleme
             java.util.Map<Long, java.util.List<NetworkMac>> macMap = macs.stream()
                     .collect(java.util.stream.Collectors.groupingBy(NetworkMac::getDeviceId));
 
+            // Batch load Owner, Dept, Office
+            java.util.Set<Long> ownerIds = result.getRecords().stream().map(Device::getOwnerId).filter(java.util.Objects::nonNull).collect(java.util.stream.Collectors.toSet());
+            java.util.Map<Long, com.irms.entity.User> userMap = ownerIds.isEmpty() ? java.util.Collections.emptyMap() :
+                    userMapper.selectBatchIds(ownerIds).stream().collect(java.util.stream.Collectors.toMap(com.irms.entity.User::getId, u -> u));
+
+            java.util.Set<Long> deptIds = new java.util.HashSet<>();
+            java.util.Set<Long> officeIds = new java.util.HashSet<>();
+            result.getRecords().forEach(d -> {
+                if (d.getDeptId() != null) deptIds.add(d.getDeptId());
+                else if (d.getOwnerId() != null && userMap.get(d.getOwnerId()) != null && userMap.get(d.getOwnerId()).getDeptId() != null) {
+                    deptIds.add(userMap.get(d.getOwnerId()).getDeptId());
+                }
+                
+                if (d.getOfficeId() != null) officeIds.add(d.getOfficeId());
+                else if (d.getOwnerId() != null && userMap.get(d.getOwnerId()) != null && userMap.get(d.getOwnerId()).getOfficeId() != null) {
+                    officeIds.add(userMap.get(d.getOwnerId()).getOfficeId());
+                }
+            });
+
+            java.util.Map<Long, com.irms.entity.Dept> deptMap = deptIds.isEmpty() ? java.util.Collections.emptyMap() :
+                    deptMapper.selectBatchIds(deptIds).stream().collect(java.util.stream.Collectors.toMap(com.irms.entity.Dept::getId, dp -> dp));
+            java.util.Map<Long, com.irms.entity.Office> officeMap = officeIds.isEmpty() ? java.util.Collections.emptyMap() :
+                    officeMapper.selectBatchIds(officeIds).stream().collect(java.util.stream.Collectors.toMap(com.irms.entity.Office::getId, o -> o));
+
             // 3. Nest IPs into MACs and set to Device
             result.getRecords().forEach(d -> {
                 if (d.getOwnerId() != null) {
-                    d.setOwner(userMapper.selectById(d.getOwnerId()));
+                    d.setOwner(userMap.get(d.getOwnerId()));
                 }
                 if (d.getDeptId() != null) {
-                    d.setDept(deptMapper.selectById(d.getDeptId()));
+                    d.setDept(deptMap.get(d.getDeptId()));
                 } else if (d.getOwner() != null && d.getOwner().getDeptId() != null) {
-                    d.setDept(deptMapper.selectById(d.getOwner().getDeptId()));
+                    d.setDept(deptMap.get(d.getOwner().getDeptId()));
                 }
                 if (d.getOfficeId() != null) {
-                    d.setOffice(officeMapper.selectById(d.getOfficeId()));
+                    d.setOffice(officeMap.get(d.getOfficeId()));
                 } else if (d.getOwner() != null && d.getOwner().getOfficeId() != null) {
-                    d.setOffice(officeMapper.selectById(d.getOwner().getOfficeId()));
+                    d.setOffice(officeMap.get(d.getOwner().getOfficeId()));
                 }
 
                 List<NetworkIp> deviceIps = ipMap.getOrDefault(d.getId(), java.util.Collections.emptyList());
